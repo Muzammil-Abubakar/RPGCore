@@ -6,16 +6,19 @@ public class Mover : MonoBehaviour
 {
     private NavMeshAgent agent;
     private Camera mainCamera;
+    private Animator animator;
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
         mainCamera = Camera.main;
     }
 
     private void Update()
     {
         MoveToCursor();
+        UpdateVelocity();
     }
 
     private void MoveToCursor()
@@ -39,5 +42,12 @@ public class Mover : MonoBehaviour
         {
             agent.SetDestination(hit.point);
         }
+    }
+
+    private void UpdateVelocity()
+    {
+        Vector3 localVelocity = transform.InverseTransformDirection(agent.velocity);
+
+        animator.SetFloat("forwardSpeed", localVelocity.z);
     }
 }
