@@ -2,102 +2,105 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
-public class Mover : MonoBehaviour
+namespace RPG.Movement
 {
-    private NavMeshAgent agent;
-    private Animator animator;
-
-    [SerializeField] private float stopDuration = 0.15f;
-
-    private bool isBraking;
-    private Vector3 brakingVelocity;
-    private float brakingTimer;
-
-    private void Awake()
+    public class Mover : MonoBehaviour
     {
-        agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
-    }
+        private NavMeshAgent agent;
+        private Animator animator;
 
-    private void Update()
-    {
-        CheckForStop();
+        [SerializeField] private float stopDuration = 0.15f;
 
-        if (isBraking)
+        private bool isBraking;
+        private Vector3 brakingVelocity;
+        private float brakingTimer;
+
+        private void Awake()
         {
-            UpdateBraking();
+            agent = GetComponent<NavMeshAgent>();
+            animator = GetComponent<Animator>();
         }
 
-        UpdateVelocity();
-    }
-
-    public void MoveTo(Vector3 destination)
-    {
-        // If we click somewhere while braking,
-        // immediately allow movement again.
-        isBraking = false;
-        brakingVelocity = Vector3.zero;
-
-        agent.SetDestination(destination);
-    }
-
-    private void CheckForStop()
-    {
-        if (Mouse.current == null ||
-            !Mouse.current.rightButton.wasPressedThisFrame)
+        private void Update()
         {
-            return;
+            CheckForStop();
+
+            if (isBraking)
+            {
+                UpdateBraking();
+            }
+
+            UpdateVelocity();
         }
 
-        // Remember our current movement before cancelling the path.
-        brakingVelocity = agent.velocity;
-
-        // Remove the current destination.
-        agent.ResetPath();
-
-        brakingTimer = 0f;
-        isBraking = true;
-    }
-
-    private void UpdateBraking()
-    {
-        brakingTimer += Time.deltaTime;
-
-        float progress = brakingTimer / stopDuration;
-
-        // Quickly reduce movement from current speed to zero.
-        Vector3 currentVelocity =
-            Vector3.Lerp(
-                brakingVelocity,
-                Vector3.zero,
-                progress
-            );
-
-        agent.Move(currentVelocity * Time.deltaTime);
-
-        if (brakingTimer >= stopDuration)
+        public void MoveTo(Vector3 destination)
         {
+            // If we click somewhere while braking,
+            // immediately allow movement again.
             isBraking = false;
             brakingVelocity = Vector3.zero;
+
+            agent.SetDestination(destination);
         }
-    }
 
-    private void UpdateVelocity()
-    {
-        Vector3 velocity = isBraking
-            ? Vector3.Lerp(
-                brakingVelocity,
-                Vector3.zero,
-                brakingTimer / stopDuration
-            )
-            : agent.velocity;
+        private void CheckForStop()
+        {
+            if (Mouse.current == null ||
+                !Mouse.current.rightButton.wasPressedThisFrame)
+            {
+                return;
+            }
 
-        Vector3 localVelocity =
-            transform.InverseTransformDirection(velocity);
+            // Remember our current movement before cancelling the path.
+            brakingVelocity = agent.velocity;
 
-        animator.SetFloat(
-            "forwardSpeed",
-            localVelocity.z
-        );
+            // Remove the current destination.
+            agent.ResetPath();
+
+            brakingTimer = 0f;
+            isBraking = true;
+        }
+
+        private void UpdateBraking()
+        {
+            brakingTimer += Time.deltaTime;
+
+            float progress = brakingTimer / stopDuration;
+
+            // Quickly reduce movement from current speed to zero.
+            Vector3 currentVelocity =
+                Vector3.Lerp(
+                    brakingVelocity,
+                    Vector3.zero,
+                    progress
+                );
+
+            agent.Move(currentVelocity * Time.deltaTime);
+
+            if (brakingTimer >= stopDuration)
+            {
+                isBraking = false;
+                brakingVelocity = Vector3.zero;
+            }
+        }
+
+        private void UpdateVelocity()
+        {
+            Vector3 velocity = isBraking
+                ? Vector3.Lerp(
+                    brakingVelocity,
+                    Vector3.zero,
+                    brakingTimer / stopDuration
+                )
+                : agent.velocity;
+
+            Vector3 localVelocity =
+                transform.InverseTransformDirection(velocity);
+
+            animator.SetFloat(
+                "forwardSpeed",
+                localVelocity.z
+            );
+        }
     }
 }

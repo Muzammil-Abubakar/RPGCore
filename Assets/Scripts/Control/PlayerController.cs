@@ -1,45 +1,49 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using RPG.Movement;
 
-public class PlayerController : MonoBehaviour
+namespace RPG.Control
 {
-    private Camera mainCamera;
-    private Mover mover;
-
-    private void Awake()
+    public class PlayerController : MonoBehaviour
     {
-        mainCamera = Camera.main;
-        mover = GetComponent<Mover>();
-    }
+        private Camera mainCamera;
+        private Mover mover;
 
-    private void Update()
-    {
-        MoveToCursor();
-    }
-
-    private void MoveToCursor()
-    {
-        if (Mouse.current == null ||
-            !Mouse.current.leftButton.isPressed)
+        private void Awake()
         {
-            return;
+            mainCamera = Camera.main;
+            mover = GetComponent<Mover>();
         }
 
-        Vector2 mousePosition =
-            Mouse.current.position.ReadValue();
-
-        Ray ray =
-            mainCamera.ScreenPointToRay(mousePosition);
-
-        Debug.DrawRay(
-            ray.origin,
-            ray.direction * 1000f,
-            Color.red
-        );
-
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        private void Update()
         {
-            mover.MoveTo(hit.point);
+            MoveToCursor();
+        }
+
+        private void MoveToCursor()
+        {
+            if (Mouse.current == null ||
+                !Mouse.current.leftButton.isPressed)
+            {
+                return;
+            }
+
+            Vector2 mousePosition =
+                Mouse.current.position.ReadValue();
+
+            Ray ray =
+                mainCamera.ScreenPointToRay(mousePosition);
+
+            Debug.DrawRay(
+                ray.origin,
+                ray.direction * 1000f,
+                Color.red
+            );
+
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                mover.MoveTo(hit.point);
+            }
         }
     }
 }
