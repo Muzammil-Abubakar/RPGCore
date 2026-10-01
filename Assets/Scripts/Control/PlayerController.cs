@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using RPG.Movement;
+using RPG.Combat;
 
 namespace RPG.Control
 {
@@ -17,10 +18,26 @@ namespace RPG.Control
 
         private void Update()
         {
-            MoveToCursor();
+            InteractWithCombat();
+            InteractWithMovement();
         }
 
-        private void MoveToCursor()
+        private void InteractWithCombat()
+        {
+            Ray ray = GetMouseRay();
+
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                CombatTarget target = hit.transform.GetComponent<CombatTarget>();
+
+                if (target != null)
+                {
+                    Debug.Log("Combat Target Found");
+                }
+            }
+        }
+
+        private void InteractWithMovement()
         {
             if (Mouse.current == null ||
                 !Mouse.current.leftButton.isPressed)
@@ -28,22 +45,21 @@ namespace RPG.Control
                 return;
             }
 
-            Vector2 mousePosition =
-                Mouse.current.position.ReadValue();
-
-            Ray ray =
-                mainCamera.ScreenPointToRay(mousePosition);
-
-            Debug.DrawRay(
-                ray.origin,
-                ray.direction * 1000f,
-                Color.red
-            );
+            Ray ray = GetMouseRay();
 
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 mover.MoveTo(hit.point);
             }
+        }
+
+        private Ray GetMouseRay()
+        {
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+
+            Ray ray = mainCamera.ScreenPointToRay(mousePosition);
+
+            return ray;
         }
     }
 }
