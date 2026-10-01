@@ -9,20 +9,23 @@ namespace RPG.Control
     {
         private Camera mainCamera;
         private Mover mover;
+        private Fighter fighter;
 
         private void Awake()
         {
             mainCamera = Camera.main;
             mover = GetComponent<Mover>();
+            fighter = GetComponent<Fighter>();
         }
 
         private void Update()
         {
-            InteractWithCombat();
+            if (InteractWithCombat()) return;
+
             InteractWithMovement();
         }
 
-        private void InteractWithCombat()
+        private bool InteractWithCombat()
         {
             Ray ray = GetMouseRay();
 
@@ -32,9 +35,17 @@ namespace RPG.Control
 
                 if (target != null)
                 {
-                    Debug.Log("Combat Target Found");
+                    if (Mouse.current != null &&
+                        Mouse.current.leftButton.wasPressedThisFrame)
+                    {
+                        fighter.Attack(target);
+                    }
+
+                    return true;
                 }
             }
+
+            return false;
         }
 
         private void InteractWithMovement()
@@ -57,9 +68,7 @@ namespace RPG.Control
         {
             Vector2 mousePosition = Mouse.current.position.ReadValue();
 
-            Ray ray = mainCamera.ScreenPointToRay(mousePosition);
-
-            return ray;
+            return mainCamera.ScreenPointToRay(mousePosition);
         }
     }
 }
