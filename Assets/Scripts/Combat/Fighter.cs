@@ -1,12 +1,45 @@
 using UnityEngine;
+using RPG.Movement;
 
 namespace RPG.Combat
 {
     public class Fighter : MonoBehaviour
     {
-        public void Attack(CombatTarget target)
+        [SerializeField] float weaponRange = 2f;
+
+        Transform target;
+        Mover mover;
+
+        private void Awake()
         {
-            Debug.Log("Take that you short enemy.");
+            mover = GetComponent<Mover>();
+        }
+
+        private void Update()
+        {
+            if (target == null) return;
+
+            if (GetDistanceToTarget() > weaponRange)
+            {
+                mover.MoveTo(target.position);
+            }
+            else
+            {
+                mover.Stop();
+            }
+        }
+
+        public void Attack(CombatTarget combatTarget)
+        {
+            target = combatTarget.transform;
+        }
+
+        private float GetDistanceToTarget()
+        {
+            return Vector3.Distance(
+                transform.position,
+                target.position
+            );
         }
     }
 }

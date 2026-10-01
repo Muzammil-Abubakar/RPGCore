@@ -43,6 +43,11 @@ namespace RPG.Movement
             agent.SetDestination(destination);
         }
 
+        public void Stop()
+        {
+            agent.ResetPath();
+        }
+
         private void CheckForStop()
         {
             if (Mouse.current == null ||
