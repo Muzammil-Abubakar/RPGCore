@@ -21,8 +21,9 @@ namespace RPG.Control
         private void Update()
         {
             if (InteractWithCombat()) return;
+            if (InteractWithMovement()) return;
 
-            InteractWithMovement();
+            Debug.Log("Nothing to do.");
         }
 
         private bool InteractWithCombat()
@@ -48,20 +49,22 @@ namespace RPG.Control
             return false;
         }
 
-        private void InteractWithMovement()
+        private bool InteractWithMovement()
         {
-            if (Mouse.current == null ||
-                !Mouse.current.leftButton.isPressed)
-            {
-                return;
-            }
-
             Ray ray = GetMouseRay();
 
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                mover.MoveTo(hit.point);
+                if (Mouse.current != null &&
+                    Mouse.current.leftButton.isPressed)
+                {
+                    mover.MoveTo(hit.point);
+                }
+
+                return true;
             }
+
+            return false;
         }
 
         private Ray GetMouseRay()
