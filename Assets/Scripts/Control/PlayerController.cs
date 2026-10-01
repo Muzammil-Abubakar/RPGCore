@@ -58,7 +58,7 @@ namespace RPG.Control
                 if (Mouse.current != null &&
                     Mouse.current.leftButton.isPressed)
                 {
-                    mover.MoveTo(hit.point);
+                    mover.StartMoveAction(hit.point);
                 }
 
                 return true;

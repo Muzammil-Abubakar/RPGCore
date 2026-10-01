@@ -34,6 +34,11 @@ namespace RPG.Combat
             target = combatTarget.transform;
         }
 
+        public void Cancel()
+        {
+            target = null;
+        }
+
         private float GetDistanceToTarget()
         {
             return Vector3.Distance(
