@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 2987886290435165090}
   - component: {fileID: 1649355308902272783}
   - component: {fileID: 8390019406040680463}
+  - component: {fileID: 1609738919278237820}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -202,6 +203,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RPG.Combat.Fighter
   weaponRange: 2
 --- !u!114 &8390019406040680463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6504383053801595314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4a26e31b202224cb5bfc655a3e64b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RPG.Core.ActionScheduler
+--- !u!114 &1609738919278237820
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
