@@ -1,32 +1,38 @@
 using UnityEngine;
 using UnityEngine.AI;
-using RPG.Combat;
 using RPG.Core;
 
 namespace RPG.Movement
 {
-    public class Mover : MonoBehaviour
+    public class Mover : MonoBehaviour, IAction
     {
-        private NavMeshAgent agent;
-        private Animator animator;
-        private Fighter fighter;
+        NavMeshAgent agent;
+        Animator animator;
+        ActionScheduler actionScheduler;
 
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
-            fighter = GetComponent<Fighter>();
+            actionScheduler = GetComponent<ActionScheduler>();
         }
 
         private void Update()
         {
             UpdateVelocity();
         }
+        private void UpdateVelocity()
+        {
+            Vector3 velocity = agent.velocity;
+            Vector3 localVelocity =
+                transform.InverseTransformDirection(velocity);
+
+            animator.SetFloat("forwardSpeed", localVelocity.z);
+        }
 
         public void StartMoveAction(Vector3 destination)
         {
-            GetComponent<ActionScheduler>().StartAction(this);
-            fighter.Cancel();
+            actionScheduler.StartAction(this);
             MoveTo(destination);
         }
 
@@ -35,22 +41,10 @@ namespace RPG.Movement
             agent.SetDestination(destination);
         }
 
-        public void Stop()
+        public void Cancel()
         {
             agent.ResetPath();
         }
 
-        private void UpdateVelocity()
-        {
-            Vector3 velocity = agent.velocity;
-
-            Vector3 localVelocity =
-                transform.InverseTransformDirection(velocity);
-
-            animator.SetFloat(
-                "forwardSpeed",
-                localVelocity.z
-            );
-        }
     }
 }
