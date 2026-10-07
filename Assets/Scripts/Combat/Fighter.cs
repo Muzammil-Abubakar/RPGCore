@@ -8,10 +8,12 @@ namespace RPG.Combat
     {
         [SerializeField] float weaponRange = 2f;
         [SerializeField] float timeBetweenAttacks = 1f;
+        [SerializeField] float weaponDamage = 20f;
 
         Transform target;
         Mover mover;
         ActionScheduler actionScheduler;
+        Animator animator;
 
         float timeSinceLastAttack = Mathf.Infinity;
 
@@ -19,6 +21,7 @@ namespace RPG.Combat
         {
             mover = GetComponent<Mover>();
             actionScheduler = GetComponent<ActionScheduler>();
+            animator = GetComponent<Animator>();
         }
 
         private void Update()
@@ -53,8 +56,24 @@ namespace RPG.Combat
         {
             if (timeSinceLastAttack < timeBetweenAttacks) return;
 
-            GetComponent<Animator>().SetTrigger("attack");
+            // SetTrigger("attack") starts the attack animation.
+            // The attack animation will automatically call the Hit(), its an Animation Event.
+            animator.SetTrigger("attack");
+
             timeSinceLastAttack = 0f;
+        }
+
+        // Animation Event
+        void Hit()
+        {
+            if (target == null) return;
+
+            Health health = target.GetComponent<Health>();
+
+            if (health != null)
+            {
+                health.TakeDamage(weaponDamage);
+            }
         }
 
         private float GetDistanceToTarget()
@@ -63,11 +82,6 @@ namespace RPG.Combat
                 transform.position,
                 target.position
             );
-        }
-
-        // Animation Event
-        void Hit()
-        {
         }
     }
 }
