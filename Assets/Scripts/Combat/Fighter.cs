@@ -55,8 +55,6 @@ namespace RPG.Combat
 
             Health newTarget = combatTarget.GetComponent<Health>();
 
-            // Do not attack if there is no Health
-            // component or the target is already dead.
             if (newTarget == null || newTarget.IsDead())
             {
                 return;
@@ -77,6 +75,11 @@ namespace RPG.Combat
         private void AttackBehavior()
         {
             if (target == null || target.IsDead()) return;
+
+            // Face the target while attacking.
+            Vector3 targetPosition = target.transform.position;
+            targetPosition.y = transform.position.y;
+            transform.LookAt(targetPosition);
 
             if (timeSinceLastAttack < timeBetweenAttacks)
             {
