@@ -49,6 +49,7 @@ namespace RPG.Combat
 
         public void Cancel()
         {
+            GetComponent<Animator>().SetTrigger("stopAttack");
             target = null;
         }
 
