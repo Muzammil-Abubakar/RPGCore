@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using RPG.Core;
 using RPG.Movement;
@@ -10,7 +11,7 @@ namespace RPG.Combat
         [SerializeField] float timeBetweenAttacks = 1f;
         [SerializeField] float weaponDamage = 20f;
 
-        Transform target;
+        Health target;
         Mover mover;
         ActionScheduler actionScheduler;
         Animator animator;
@@ -30,9 +31,16 @@ namespace RPG.Combat
 
             if (target == null) return;
 
+            // Stop attacking when the target dies.
+            if (target.IsDead())
+            {
+                Cancel();
+                return;
+            }
+
             if (GetDistanceToTarget() > weaponRange)
             {
-                mover.MoveTo(target.position);
+                mover.MoveTo(target.transform.position);
             }
             else
             {
@@ -43,22 +51,41 @@ namespace RPG.Combat
 
         public void Attack(CombatTarget combatTarget)
         {
+            if (combatTarget == null) return;
+
+            Health newTarget = combatTarget.GetComponent<Health>();
+
+            // Do not attack if there is no Health
+            // component or the target is already dead.
+            if (newTarget == null || newTarget.IsDead())
+            {
+                return;
+            }
+
             actionScheduler.StartAction(this);
-            target = combatTarget.transform;
+            target = newTarget;
         }
 
         public void Cancel()
         {
-            GetComponent<Animator>().SetTrigger("stopAttack");
+            animator.ResetTrigger("attack");
+            animator.SetTrigger("stopAttack");
+
             target = null;
         }
 
         private void AttackBehavior()
         {
-            if (timeSinceLastAttack < timeBetweenAttacks) return;
+            if (target == null || target.IsDead()) return;
 
-            // SetTrigger("attack") starts the attack animation.
-            // The attack animation will automatically call the Hit(), its an Animation Event.
+            if (timeSinceLastAttack < timeBetweenAttacks)
+            {
+                return;
+            }
+
+            // Attack animation calls Hit()
+            // through an Animation Event.
+            animator.ResetTrigger("stopAttack");
             animator.SetTrigger("attack");
 
             timeSinceLastAttack = 0f;
@@ -67,21 +94,16 @@ namespace RPG.Combat
         // Animation Event
         void Hit()
         {
-            if (target == null) return;
+            if (target == null || target.IsDead()) return;
 
-            Health health = target.GetComponent<Health>();
-
-            if (health != null)
-            {
-                health.TakeDamage(weaponDamage);
-            }
+            target.TakeDamage(weaponDamage);
         }
 
         private float GetDistanceToTarget()
         {
             return Vector3.Distance(
                 transform.position,
-                target.position
+                target.transform.position
             );
         }
     }

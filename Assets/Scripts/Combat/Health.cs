@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 namespace RPG.Combat
@@ -8,13 +9,20 @@ namespace RPG.Combat
 
         bool isDead = false;
 
+        public bool IsDead()
+        {
+            return isDead;
+        }
+
         public void TakeDamage(float damage)
         {
+            if (isDead) return;
+
             healthPoints = Mathf.Max(healthPoints - damage, 0f);
 
             Debug.Log("Health: " + healthPoints);
 
-            if (healthPoints == 0 && !isDead)
+            if (healthPoints == 0f)
             {
                 Die();
             }
