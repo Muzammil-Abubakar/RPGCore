@@ -49,19 +49,26 @@ namespace RPG.Combat
             }
         }
 
-        public void Attack(CombatTarget combatTarget)
+        // Check whether a target can be attacked.
+        public bool CanAttack(CombatTarget combatTarget)
         {
-            if (combatTarget == null) return;
-
-            Health newTarget = combatTarget.GetComponent<Health>();
-
-            if (newTarget == null || newTarget.IsDead())
+            if (combatTarget == null)
             {
-                return;
+                return false;
             }
 
+            Health targetToTest = combatTarget.GetComponent<Health>();
+
+            return targetToTest != null && !targetToTest.IsDead();
+        }
+
+        public void Attack(CombatTarget combatTarget)
+        {
+            if (!CanAttack(combatTarget)) return;
+
             actionScheduler.StartAction(this);
-            target = newTarget;
+
+            target = combatTarget.GetComponent<Health>();
         }
 
         public void Cancel()

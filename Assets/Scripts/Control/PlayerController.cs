@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 using RPG.Movement;
@@ -28,22 +29,30 @@ namespace RPG.Control
 
         private bool InteractWithCombat()
         {
-            Ray ray = GetMouseRay();
+            RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
 
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            // Check nearest hits first.
+            System.Array.Sort(hits, (a, b) =>
+                a.distance.CompareTo(b.distance));
+
+            foreach (RaycastHit hit in hits)
             {
-                CombatTarget target = hit.transform.GetComponent<CombatTarget>();
+                CombatTarget target =
+                    hit.transform.GetComponent<CombatTarget>();
 
-                if (target != null)
+                // Skip invalid or dead targets.
+                if (!fighter.CanAttack(target))
                 {
-                    if (Mouse.current != null &&
-                        Mouse.current.leftButton.wasPressedThisFrame)
-                    {
-                        fighter.Attack(target);
-                    }
-
-                    return true;
+                    continue;
                 }
+
+                if (Mouse.current != null &&
+                    Mouse.current.leftButton.wasPressedThisFrame)
+                {
+                    fighter.Attack(target);
+                }
+
+                return true;
             }
 
             return false;
