@@ -8,6 +8,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1506546680501546021, guid: 34651980f7a669c409258d837702c094, type: 3}
+      propertyPath: m_Speed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1649355308902272783, guid: 34651980f7a669c409258d837702c094, type: 3}
+      propertyPath: weaponRange
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1649355308902272783, guid: 34651980f7a669c409258d837702c094, type: 3}
+      propertyPath: weaponDamage
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1649355308902272783, guid: 34651980f7a669c409258d837702c094, type: 3}
+      propertyPath: timeBetweenAttacks
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2987886290435165090, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -125,6 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6af1f6f40d70d4141af57d9a0545ffed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIController
+  chaseDistance: 5
 --- !u!4 &7691721577132281095 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3484110930795920972, guid: 34651980f7a669c409258d837702c094, type: 3}

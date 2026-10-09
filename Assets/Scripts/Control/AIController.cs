@@ -1,5 +1,7 @@
-using UnityEngine;
 
+using UnityEngine;
+using RPG.Combat;
+using RPG.Movement;
 
 namespace RPG.Control
 {
@@ -7,18 +9,76 @@ namespace RPG.Control
     {
         [SerializeField] float chaseDistance = 5f;
 
-        void Update()
+        Fighter fighter;
+        Mover mover;
+        GameObject player;
+        Health playerHealth;
+
+        bool isChasing = false;
+
+        private void Awake()
         {
-            if (DistanceToPlayer() < chaseDistance)
+            fighter = GetComponent<Fighter>();
+            mover = GetComponent<Mover>();
+        }
+
+        private void Start()
+        {
+            player = GameObject.FindWithTag("Player");
+
+            if (player != null)
             {
-                Debug.Log("Chase Player");
+                playerHealth = player.GetComponent<Health>();
             }
+        }
+
+        private void Update()
+        {
+            if (player == null || playerHealth == null)
+            {
+                StopChasing();
+                return;
+            }
+
+            // Stop attacking if the player dies.
+            if (playerHealth.IsDead())
+            {
+                StopChasing();
+                return;
+            }
+
+            // Chase and attack when player is in range.
+            if (DistanceToPlayer() < chaseDistance &&
+                fighter.CanAttack(player))
+            {
+                if (!isChasing)
+                {
+                    fighter.Attack(player);
+                    isChasing = true;
+                }
+            }
+            else
+            {
+                StopChasing();
+            }
+        }
+
+        private void StopChasing()
+        {
+            if (!isChasing) return;
+
+            fighter.Cancel();
+            mover.Cancel();
+
+            isChasing = false;
         }
 
         private float DistanceToPlayer()
         {
-            GameObject player = GameObject.FindWithTag("Player");
-            return Vector3.Distance(player.transform.position, transform.position);
+            return Vector3.Distance(
+                player.transform.position,
+                transform.position
+            );
         }
     }
 }

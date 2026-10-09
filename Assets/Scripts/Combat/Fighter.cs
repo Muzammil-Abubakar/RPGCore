@@ -49,20 +49,22 @@ namespace RPG.Combat
             }
         }
 
-        // Check whether a target can be attacked.
-        public bool CanAttack(CombatTarget combatTarget)
+        // Works for both PlayerController and AIController.
+        public bool CanAttack(GameObject combatTarget)
         {
             if (combatTarget == null)
             {
                 return false;
             }
 
-            Health targetToTest = combatTarget.GetComponent<Health>();
+            Health targetToTest =
+                combatTarget.GetComponent<Health>();
 
-            return targetToTest != null && !targetToTest.IsDead();
+            return targetToTest != null &&
+                   !targetToTest.IsDead();
         }
 
-        public void Attack(CombatTarget combatTarget)
+        public void Attack(GameObject combatTarget)
         {
             if (!CanAttack(combatTarget)) return;
 
@@ -86,6 +88,7 @@ namespace RPG.Combat
             // Face the target while attacking.
             Vector3 targetPosition = target.transform.position;
             targetPosition.y = transform.position.y;
+
             transform.LookAt(targetPosition);
 
             if (timeSinceLastAttack < timeBetweenAttacks)

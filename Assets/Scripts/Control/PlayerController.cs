@@ -40,8 +40,14 @@ namespace RPG.Control
                 CombatTarget target =
                     hit.transform.GetComponent<CombatTarget>();
 
-                // Skip invalid or dead targets.
-                if (!fighter.CanAttack(target))
+                // Skip objects without a CombatTarget.
+                if (target == null)
+                {
+                    continue;
+                }
+
+                // Check if the target is alive and attackable.
+                if (!fighter.CanAttack(target.gameObject))
                 {
                     continue;
                 }
@@ -49,7 +55,7 @@ namespace RPG.Control
                 if (Mouse.current != null &&
                     Mouse.current.leftButton.wasPressedThisFrame)
                 {
-                    fighter.Attack(target);
+                    fighter.Attack(target.gameObject);
                 }
 
                 return true;
