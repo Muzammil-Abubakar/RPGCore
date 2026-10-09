@@ -81,5 +81,14 @@ namespace RPG.Control
                 transform.position
             );
         }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(
+                transform.position,
+                chaseDistance
+            );
+        }
     }
 }
