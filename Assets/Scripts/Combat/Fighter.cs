@@ -12,6 +12,7 @@ namespace RPG.Combat
         [SerializeField] float weaponDamage = 20f;
 
         Health target;
+        Health health;
         Mover mover;
         ActionScheduler actionScheduler;
         Animator animator;
@@ -23,15 +24,27 @@ namespace RPG.Combat
             mover = GetComponent<Mover>();
             actionScheduler = GetComponent<ActionScheduler>();
             animator = GetComponent<Animator>();
+            health = GetComponent<Health>();
         }
 
         private void Update()
         {
             timeSinceLastAttack += Time.deltaTime;
 
+            // Dead characters cannot attack.
+            if (health != null && health.IsDead())
+            {
+                if (target != null)
+                {
+                    Cancel();
+                }
+
+                return;
+            }
+
             if (target == null) return;
 
-            // Stop attacking when the target dies.
+            // Stop attacking if the target dies.
             if (target.IsDead())
             {
                 Cancel();
@@ -49,10 +62,11 @@ namespace RPG.Combat
             }
         }
 
-        // Works for both PlayerController and AIController.
         public bool CanAttack(GameObject combatTarget)
         {
-            if (combatTarget == null)
+            if (combatTarget == null) return false;
+
+            if (health != null && health.IsDead())
             {
                 return false;
             }
@@ -79,25 +93,28 @@ namespace RPG.Combat
             animator.SetTrigger("stopAttack");
 
             target = null;
+
+            mover.Cancel();
         }
 
         private void AttackBehavior()
         {
             if (target == null || target.IsDead()) return;
 
-            // Face the target while attacking.
             Vector3 targetPosition = target.transform.position;
             targetPosition.y = transform.position.y;
 
-            transform.LookAt(targetPosition);
+            // Avoid LookAt on an identical position.
+            if ((targetPosition - transform.position).sqrMagnitude > 0.001f)
+            {
+                transform.LookAt(targetPosition);
+            }
 
             if (timeSinceLastAttack < timeBetweenAttacks)
             {
                 return;
             }
 
-            // Attack animation calls Hit()
-            // through an Animation Event.
             animator.ResetTrigger("stopAttack");
             animator.SetTrigger("attack");
 
@@ -108,6 +125,8 @@ namespace RPG.Combat
         void Hit()
         {
             if (target == null || target.IsDead()) return;
+
+            if (health != null && health.IsDead()) return;
 
             target.TakeDamage(weaponDamage);
         }
