@@ -15,6 +15,8 @@ namespace RPG.Control
         GameObject player;
         Health playerHealth;
 
+        Vector3 guardPosition;
+
         bool isChasing = false;
 
         private void Awake()
@@ -25,6 +27,9 @@ namespace RPG.Control
 
         private void Start()
         {
+            // Save the original guard position.
+            guardPosition = transform.position;
+
             player = GameObject.FindWithTag("Player");
 
             if (player != null)
@@ -68,8 +73,9 @@ namespace RPG.Control
         {
             if (!isChasing) return;
 
-            fighter.Cancel();
-            mover.Cancel();
+            // Return to the original guard position.
+            // ActionScheduler cancels the Fighter action.
+            mover.StartMoveAction(guardPosition);
 
             isChasing = false;
         }
