@@ -12,6 +12,7 @@ namespace RPG.Control
         [SerializeField] float suspicionTime = 3f;
         [SerializeField] PatrolPath patrolPath;
         [SerializeField] float waypointTolerance = 1f;
+        [SerializeField] float waypointDwellTime = 3f;
 
         Fighter fighter;
         Mover mover;
@@ -23,8 +24,11 @@ namespace RPG.Control
         Vector3 guardPosition;
 
         float timeSinceLastSawPlayer = Mathf.Infinity;
+        float timeSinceArrivedAtWaypoint = Mathf.Infinity;
+
         int currentWaypointIndex = 0;
         bool shouldFindNearestWaypoint = true;
+        bool isDwelling = false;
 
         private void Awake()
         {
@@ -48,16 +52,11 @@ namespace RPG.Control
 
         private void Update()
         {
-            if (health != null && health.IsDead())
-            {
-                return;
-            }
+            if (health != null && health.IsDead()) return;
 
             if (CanAttackPlayer())
             {
                 AttackBehavior();
-                timeSinceLastSawPlayer = 0f;
-                shouldFindNearestWaypoint = true;
             }
             else if (timeSinceLastSawPlayer < suspicionTime)
             {
@@ -68,7 +67,13 @@ namespace RPG.Control
                 GuardBehavior();
             }
 
+            UpdateTimers();
+        }
+
+        private void UpdateTimers()
+        {
             timeSinceLastSawPlayer += Time.deltaTime;
+            timeSinceArrivedAtWaypoint += Time.deltaTime;
         }
 
         private bool CanAttackPlayer()
@@ -83,6 +88,9 @@ namespace RPG.Control
         private void AttackBehavior()
         {
             fighter.Attack(player);
+            timeSinceLastSawPlayer = 0f;
+            shouldFindNearestWaypoint = true;
+            isDwelling = false;
         }
 
         private void SuspicionBehavior()
@@ -108,16 +116,32 @@ namespace RPG.Control
             {
                 currentWaypointIndex = FindNearestWaypoint();
                 shouldFindNearestWaypoint = false;
+                isDwelling = false;
+                timeSinceArrivedAtWaypoint = Mathf.Infinity;
             }
 
             Vector3 waypointPosition =
                 patrolPath.GetWaypoint(currentWaypointIndex);
 
-            if (Vector3.Distance(
-                transform.position,
-                waypointPosition) < waypointTolerance)
+            if (!isDwelling &&
+                Vector3.Distance(transform.position,
+                    waypointPosition) < waypointTolerance)
             {
+                timeSinceArrivedAtWaypoint = 0f;
+                isDwelling = true;
+                actionScheduler.CancelCurrentAction();
+            }
+
+            if (isDwelling)
+            {
+                if (timeSinceArrivedAtWaypoint < waypointDwellTime)
+                {
+                    return;
+                }
+
                 CycleWaypoint();
+                isDwelling = false;
+
                 waypointPosition =
                     patrolPath.GetWaypoint(currentWaypointIndex);
             }
