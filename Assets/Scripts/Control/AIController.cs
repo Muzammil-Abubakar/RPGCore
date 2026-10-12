@@ -9,20 +9,23 @@ namespace RPG.Control
     public class AIController : MonoBehaviour
     {
         [SerializeField] float chaseDistance = 5f;
+        [SerializeField] float suspicionTime = 3f;
 
         Fighter fighter;
         Mover mover;
         GameObject player;
         Health playerHealth;
+        ActionScheduler actionScheduler;
 
         Vector3 guardPosition;
 
-        bool isChasing = false;
+        float timeSinceLastSawPlayer = Mathf.Infinity;
 
         private void Awake()
         {
             fighter = GetComponent<Fighter>();
             mover = GetComponent<Mover>();
+            actionScheduler = GetComponent<ActionScheduler>();
         }
 
         private void Start()
@@ -40,44 +43,52 @@ namespace RPG.Control
 
         private void Update()
         {
-            if (player == null || playerHealth == null)
+            // Do nothing if this guard is dead.
+            Health health = GetComponent<Health>();
+
+            if (health != null && health.IsDead())
             {
-                StopChasing();
                 return;
             }
 
-            // Stop attacking if the player dies.
-            if (playerHealth.IsDead())
-            {
-                StopChasing();
-                return;
-            }
-
-            // Chase and attack when player is in range.
-            if (DistanceToPlayer() < chaseDistance &&
+            // Attack only if the player is alive and in range.
+            if (player != null &&
+                playerHealth != null &&
+                !playerHealth.IsDead() &&
+                DistanceToPlayer() < chaseDistance &&
                 fighter.CanAttack(player))
             {
-                if (!isChasing)
-                {
-                    fighter.Attack(player);
-                    isChasing = true;
-                }
+                AttackBehavior();
+                timeSinceLastSawPlayer = 0f;
+            }
+            else if (timeSinceLastSawPlayer < suspicionTime)
+            {
+                SuspicionBehavior();
             }
             else
             {
-                StopChasing();
+                GuardBehavior();
             }
+
+            // Track how long it has been since seeing the player.
+            timeSinceLastSawPlayer += Time.deltaTime;
         }
 
-        private void StopChasing()
+        private void AttackBehavior()
         {
-            if (!isChasing) return;
+            fighter.Attack(player);
+        }
 
+        private void SuspicionBehavior()
+        {
+            // Cancel the current action and remain idle.
+            actionScheduler.CancelCurrentAction();
+        }
+
+        private void GuardBehavior()
+        {
             // Return to the original guard position.
-            // ActionScheduler cancels the Fighter action.
             mover.StartMoveAction(guardPosition);
-
-            isChasing = false;
         }
 
         private float DistanceToPlayer()
