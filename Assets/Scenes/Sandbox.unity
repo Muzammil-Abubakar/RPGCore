@@ -181,6 +181,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 465096, guid: f65a7bee03bbc4542a4af2c67922b549, type: 3}
   m_PrefabInstance: {fileID: 61239889}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &359501930 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5200230583640198801, guid: 32f8ee15d520cb94db6ee4b34a23a699, type: 3}
+  m_PrefabInstance: {fileID: 4029977551635947618}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eacc31977b0a335478cf912d348579d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PatrolPath
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -898,6 +909,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 883481978888010121, guid: 037abf115bb6bc244955b5bc007d9568, type: 3}
+      propertyPath: patrolPath
+      value: 
+      objectReference: {fileID: 359501930}
     - target: {fileID: 1316318748663926586, guid: 037abf115bb6bc244955b5bc007d9568, type: 3}
       propertyPath: m_LocalPosition.x
       value: -15.09
@@ -1199,14 +1214,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2694693413795837314, guid: 32f8ee15d520cb94db6ee4b34a23a699, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -12.77
-      objectReference: {fileID: 0}
-    - target: {fileID: 2694693413795837314, guid: 32f8ee15d520cb94db6ee4b34a23a699, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.99
-      objectReference: {fileID: 0}
     - target: {fileID: 2864856552579611505, guid: 32f8ee15d520cb94db6ee4b34a23a699, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1247,17 +1254,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4312391082105654411, guid: 32f8ee15d520cb94db6ee4b34a23a699, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 8.36
-      objectReference: {fileID: 0}
     - target: {fileID: 7541143006018775846, guid: 32f8ee15d520cb94db6ee4b34a23a699, type: 3}
       propertyPath: m_Name
       value: Patrol Path
-      objectReference: {fileID: 0}
-    - target: {fileID: 8271813512911086046, guid: 32f8ee15d520cb94db6ee4b34a23a699, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -8.94
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

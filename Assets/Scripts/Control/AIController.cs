@@ -10,27 +10,32 @@ namespace RPG.Control
     {
         [SerializeField] float chaseDistance = 5f;
         [SerializeField] float suspicionTime = 3f;
+        [SerializeField] PatrolPath patrolPath;
+        [SerializeField] float waypointTolerance = 1f;
 
         Fighter fighter;
         Mover mover;
         GameObject player;
         Health playerHealth;
+        Health health;
         ActionScheduler actionScheduler;
 
         Vector3 guardPosition;
 
         float timeSinceLastSawPlayer = Mathf.Infinity;
+        int currentWaypointIndex = 0;
+        bool shouldFindNearestWaypoint = true;
 
         private void Awake()
         {
             fighter = GetComponent<Fighter>();
             mover = GetComponent<Mover>();
+            health = GetComponent<Health>();
             actionScheduler = GetComponent<ActionScheduler>();
         }
 
         private void Start()
         {
-            // Save the original guard position.
             guardPosition = transform.position;
 
             player = GameObject.FindWithTag("Player");
@@ -43,23 +48,16 @@ namespace RPG.Control
 
         private void Update()
         {
-            // Do nothing if this guard is dead.
-            Health health = GetComponent<Health>();
-
             if (health != null && health.IsDead())
             {
                 return;
             }
 
-            // Attack only if the player is alive and in range.
-            if (player != null &&
-                playerHealth != null &&
-                !playerHealth.IsDead() &&
-                DistanceToPlayer() < chaseDistance &&
-                fighter.CanAttack(player))
+            if (CanAttackPlayer())
             {
                 AttackBehavior();
                 timeSinceLastSawPlayer = 0f;
+                shouldFindNearestWaypoint = true;
             }
             else if (timeSinceLastSawPlayer < suspicionTime)
             {
@@ -70,8 +68,16 @@ namespace RPG.Control
                 GuardBehavior();
             }
 
-            // Track how long it has been since seeing the player.
             timeSinceLastSawPlayer += Time.deltaTime;
+        }
+
+        private bool CanAttackPlayer()
+        {
+            return player != null &&
+                   playerHealth != null &&
+                   !playerHealth.IsDead() &&
+                   DistanceToPlayer() < chaseDistance &&
+                   fighter.CanAttack(player);
         }
 
         private void AttackBehavior()
@@ -81,14 +87,70 @@ namespace RPG.Control
 
         private void SuspicionBehavior()
         {
-            // Cancel the current action and remain idle.
             actionScheduler.CancelCurrentAction();
         }
 
         private void GuardBehavior()
         {
-            // Return to the original guard position.
-            mover.StartMoveAction(guardPosition);
+            if (patrolPath == null ||
+                patrolPath.GetWaypointCount() == 0)
+            {
+                mover.StartMoveAction(guardPosition);
+                return;
+            }
+
+            PatrolBehavior();
+        }
+
+        private void PatrolBehavior()
+        {
+            if (shouldFindNearestWaypoint)
+            {
+                currentWaypointIndex = FindNearestWaypoint();
+                shouldFindNearestWaypoint = false;
+            }
+
+            Vector3 waypointPosition =
+                patrolPath.GetWaypoint(currentWaypointIndex);
+
+            if (Vector3.Distance(
+                transform.position,
+                waypointPosition) < waypointTolerance)
+            {
+                CycleWaypoint();
+                waypointPosition =
+                    patrolPath.GetWaypoint(currentWaypointIndex);
+            }
+
+            mover.StartMoveAction(waypointPosition);
+        }
+
+        private void CycleWaypoint()
+        {
+            currentWaypointIndex =
+                patrolPath.GetNextIndex(currentWaypointIndex);
+        }
+
+        private int FindNearestWaypoint()
+        {
+            int nearestIndex = 0;
+            float shortestDistance = Mathf.Infinity;
+
+            for (int i = 0; i < patrolPath.GetWaypointCount(); i++)
+            {
+                float distance = Vector3.Distance(
+                    transform.position,
+                    patrolPath.GetWaypoint(i)
+                );
+
+                if (distance < shortestDistance)
+                {
+                    shortestDistance = distance;
+                    nearestIndex = i;
+                }
+            }
+
+            return nearestIndex;
         }
 
         private float DistanceToPlayer()
