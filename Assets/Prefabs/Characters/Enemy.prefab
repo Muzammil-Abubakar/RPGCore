@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1649355308902272783, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: weaponDamage
-      value: 10
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1649355308902272783, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: timeBetweenAttacks
@@ -30,7 +30,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5233447227623799921, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -14.905
       objectReference: {fileID: 0}
     - target: {fileID: 5233447227623799921, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: m_LocalPosition.y
@@ -38,23 +38,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5233447227623799921, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -9.474
       objectReference: {fileID: 0}
     - target: {fileID: 5233447227623799921, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7375359
       objectReference: {fileID: 0}
     - target: {fileID: 5233447227623799921, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5233447227623799921, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.67530805
       objectReference: {fileID: 0}
     - target: {fileID: 5233447227623799921, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5233447227623799921, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -62,7 +62,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5233447227623799921, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 84.956
       objectReference: {fileID: 0}
     - target: {fileID: 5233447227623799921, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -74,7 +74,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6574435777867598486, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: healthPoints
-      value: 30
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -146,6 +146,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIController
   chaseDistance: 5
+  suspicionTime: 3
+  patrolPath: {fileID: 0}
+  waypointTolerance: 1
+  waypointDwellTime: 3
 --- !u!4 &7691721577132281095 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3484110930795920972, guid: 34651980f7a669c409258d837702c094, type: 3}

@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: weaponRange
       value: 1.3
       objectReference: {fileID: 0}
+    - target: {fileID: 1649355308902272783, guid: 34651980f7a669c409258d837702c094, type: 3}
+      propertyPath: weaponDamage
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5233447227623799921, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
