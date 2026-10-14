@@ -24,6 +24,10 @@ PrefabInstance:
       propertyPath: timeBetweenAttacks
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2416344072744057847, guid: 34651980f7a669c409258d837702c094, type: 3}
+      propertyPath: maxSpeed
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 2987886290435165090, guid: 34651980f7a669c409258d837702c094, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -150,6 +154,7 @@ MonoBehaviour:
   patrolPath: {fileID: 0}
   waypointTolerance: 1
   waypointDwellTime: 3
+  patrolSpeedFraction: 0.3
 --- !u!4 &7691721577132281095 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3484110930795920972, guid: 34651980f7a669c409258d837702c094, type: 3}
