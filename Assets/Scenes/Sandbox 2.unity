@@ -868,7 +868,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2545596669958592857, guid: af1fd8f1c626e294e8197eac43600da1, type: 3}
       propertyPath: m_Name
-      value: Portal
+      value: Portal A
+      objectReference: {fileID: 0}
+    - target: {fileID: 4031182689688650879, guid: af1fd8f1c626e294e8197eac43600da1, type: 3}
+      propertyPath: identifier
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4031182689688650879, guid: af1fd8f1c626e294e8197eac43600da1, type: 3}
       propertyPath: destinationSceneIndex
@@ -2796,7 +2800,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2545596669958592857, guid: af1fd8f1c626e294e8197eac43600da1, type: 3}
       propertyPath: m_Name
-      value: Portal (1)
+      value: Portal B
+      objectReference: {fileID: 0}
+    - target: {fileID: 4031182689688650879, guid: af1fd8f1c626e294e8197eac43600da1, type: 3}
+      propertyPath: identifier
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4031182689688650879, guid: af1fd8f1c626e294e8197eac43600da1, type: 3}
       propertyPath: destinationSceneIndex

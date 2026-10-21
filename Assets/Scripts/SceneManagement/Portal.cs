@@ -7,8 +7,14 @@ namespace RPG.SceneManagement
 {
     public class Portal : MonoBehaviour
     {
+        public enum PortalIdentifier
+        {
+            A, B, C, D, E, F, G
+        }
+
         [SerializeField] private int destinationSceneIndex;
         [SerializeField] private Transform spawnPoint;
+        [SerializeField] private PortalIdentifier identifier;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -43,12 +49,15 @@ namespace RPG.SceneManagement
 
         private Portal GetOtherPortal()
         {
-            foreach (Portal portal in FindObjectsByType<Portal>(FindObjectsSortMode.None))
+            foreach (Portal portal in FindObjectsByType<Portal>(FindObjectsInactive.Exclude))
             {
                 if (portal == this)
                     continue;
 
-                return portal;
+                if (portal.identifier == this.identifier)
+                {
+                    return portal;
+                }
             }
 
             return null;
