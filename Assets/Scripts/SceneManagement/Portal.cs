@@ -19,6 +19,8 @@ namespace RPG.SceneManagement
                 return;
             }
 
+            //real
+
             Debug.Log($"Player enters portal. Loading {destinationScene}.");
 
             SceneManager.LoadScene(destinationScene);
