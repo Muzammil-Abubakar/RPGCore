@@ -1,4 +1,4 @@
-
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,24 +6,35 @@ namespace RPG.SceneManagement
 {
     public class Portal : MonoBehaviour
     {
-        [SerializeField] private string destinationScene;
+        [SerializeField] private int destinationSceneIndex;
 
         private void OnTriggerEnter(Collider other)
         {
             if (!other.CompareTag("Player"))
                 return;
 
-            if (string.IsNullOrEmpty(destinationScene))
+            if (destinationSceneIndex < 0)
             {
-                Debug.LogWarning("Portal: No destination scene assigned!", this);
+                Debug.LogWarning("Portal: Invalid destination scene index!", this);
                 return;
             }
 
-            //real
+            Debug.Log($"Player enters portal. Loading scene index {destinationSceneIndex} asynchronously.");
 
-            Debug.Log($"Player enters portal. Loading {destinationScene}.");
+            StartCoroutine(Transition());
+        }
 
-            SceneManager.LoadScene(destinationScene);
+        private IEnumerator Transition()
+        {
+            DontDestroyOnLoad(gameObject);
+
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(destinationSceneIndex);
+
+            yield return asyncLoad;
+
+            Debug.Log($"Scene loaded: {destinationSceneIndex} (printed from the previous portal).");
+
+            Destroy(gameObject);
         }
     }
 }
