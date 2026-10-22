@@ -2054,6 +2054,7 @@ GameObject:
   - component: {fileID: 849912690}
   - component: {fileID: 849912689}
   - component: {fileID: 849912688}
+  - component: {fileID: 849912691}
   m_Layer: 0
   m_Name: Fader
   m_TagString: Untagged
@@ -2194,6 +2195,18 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &849912691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849912683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9532864d7ee958f41947a27198d5290c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RPG.SceneManagement.Fader
 --- !u!1 &897889907
 GameObject:
   m_ObjectHideFlags: 0
