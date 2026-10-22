@@ -15,6 +15,11 @@ namespace RPG.SceneManagement
         [SerializeField] private int destinationSceneIndex;
         [SerializeField] private Transform spawnPoint;
         [SerializeField] private PortalIdentifier identifier;
+        
+        [Header("Fade Settings")]
+        [SerializeField] private float fadeOutTime = 1f;
+        [SerializeField] private float fadeInTime = 1f;
+        [SerializeField] private float fadeWaitTime = 0.5f;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -34,8 +39,11 @@ namespace RPG.SceneManagement
         {
             DontDestroyOnLoad(gameObject);
 
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(destinationSceneIndex);
+            Fader fader = FindAnyObjectByType<Fader>();
 
+            yield return fader.FadeOut(fadeOutTime);
+            
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(destinationSceneIndex);
             yield return asyncLoad;
 
             Portal otherPortal = GetOtherPortal();
@@ -43,6 +51,11 @@ namespace RPG.SceneManagement
             {
                 UpdatePlayer(otherPortal);
             }
+
+            yield return new WaitForSeconds(fadeWaitTime);
+
+            fader = FindAnyObjectByType<Fader>();
+            yield return fader.FadeIn(fadeInTime);
 
             Destroy(gameObject);
         }
@@ -66,8 +79,12 @@ namespace RPG.SceneManagement
         private void UpdatePlayer(Portal otherPortal)
         {
             GameObject player = GameObject.FindWithTag("Player");
-            player.GetComponent<NavMeshAgent>().Warp(otherPortal.spawnPoint.position);
+            NavMeshAgent navMeshAgent = player.GetComponent<NavMeshAgent>();
+            
+            navMeshAgent.enabled = false;
+            player.transform.position = otherPortal.spawnPoint.position;
             player.transform.rotation = otherPortal.spawnPoint.rotation;
+            navMeshAgent.enabled = true;
         }
     }
 }
